@@ -20,6 +20,7 @@ export default function LoginForm() {
   const [isLording, setIsLording] = useState(false);
 
   const handleSubmit = () => {
+    setError(undefined);
     setIsLording(true);
 
     const { value, error } = schema.validate({
