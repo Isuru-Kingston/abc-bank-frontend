@@ -1,5 +1,13 @@
-import React from "react";
-
 export default function Branch() {
-  return <div>Branch</div>;
+  return (
+    <div>
+      <div>Branch</div>
+      <div>Branch</div>
+      <div>Branch</div>
+      <div>Branch</div>
+      <div>Branch</div>
+      <div>Branch</div>
+      <div>Branch</div>
+    </div>
+  );
 }

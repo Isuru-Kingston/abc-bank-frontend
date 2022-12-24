@@ -1,13 +1,13 @@
-// import CreateBranchForm from "./components/Branch/CreateBranchForm";
-// import Login from "./components/Login"
-
-import CreateEmplyeeForm from "./components/Branch/CreateEmplyeeForm";
+import { Outlet } from "react-router-dom";
+import NavBar from "./components/NavBar";
 
 function App() {
   return (
-    // <Login />
-    // <CreateBranchForm/>
-    <CreateEmplyeeForm/>
+    <>
+      <NavBar>
+        <Outlet />
+      </NavBar>
+    </>
   );
 }
 
