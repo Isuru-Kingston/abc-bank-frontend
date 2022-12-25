@@ -17,6 +17,14 @@ import BranchDetails from "./components/Branch/BranchDetails";
 import EmplyeeDetails from "./components/Branch/EmplyeeDeatils";
 import CreateBranchForm from "./components/Branch/CreateBranchForm";
 import CreateEmplyeeForm from "./components/Branch/CreateEmplyeeForm";
+import Customer from "./components/Customer";
+import Employee from "./components/Employee";
+import CreateCustomer from "./components/Employee/CreateCustomer";
+import DirectTransferForm from "./components/Account/DirectTransferForm";
+import CreateAccount from "./components/Account/CreateAccout";
+import IndirectTransfer from "./components/Account/IndirectTransferForm";
+import TransferMoney from "./components/Customer/TransferMoney";
+import AccountList from "./components/Customer/AccountList";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +51,38 @@ const router = createBrowserRouter([
       {
         path: "branch/create-employee",
         element: <CreateEmplyeeForm />,
+      },
+      {
+        path: "customer",
+        element: <Customer />,
+      },
+      {
+        path: "customer/transfer-money",
+        element: <TransferMoney />,
+      },
+      {
+        path: "customer/account-list",
+        element: <AccountList />,
+      },
+      {
+        path: "employee",
+        element: <Employee />,
+      },
+      {
+        path: "employee/create-customer",
+        element: <CreateCustomer />,
+      },
+      {
+        path: "employee/create-account",
+        element: <CreateAccount />,
+      },
+      {
+        path: "employee/direct-transfer",
+        element: <DirectTransferForm />,
+      },
+      {
+        path: "employee/indirect-transfer",
+        element: <IndirectTransfer />,
       },
     ],
   },

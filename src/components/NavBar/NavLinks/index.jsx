@@ -35,6 +35,48 @@ export default function NavLinks() {
         />
       </>
     );
+  } else if (pathname.substring(0, 9) === "/employee") {
+    return (
+      <>
+        <NavLink to={"/employee"} name="Dashboard" icon={<DashboardIcon />} />
+        <NavLink
+          to={"/employee/create-account"}
+          name="Create Account"
+          icon={<AccountBalanceIcon />}
+        />
+        <NavLink
+          to={"/employee/create-customer"}
+          name="Create Customer"
+          icon={<PeopleIcon />}
+        />
+        <NavLink
+          to={"/employee/indirect-transfer"}
+          name="Indirect Transfer"
+          icon={<PersonAddAltIcon />}
+        />
+        <NavLink
+          to={"/employee/direct-transfer"}
+          name="Direct Transfer"
+          icon={<AddHomeWorkIcon />}
+        />
+      </>
+    );
+  } else if (pathname.substring(0, 9) === "/customer") {
+    return (
+      <>
+        <NavLink to={"/customer"} name="Dashboard" icon={<DashboardIcon />} />
+        <NavLink
+          to={"/customer/account-list"}
+          name="Account List"
+          icon={<AccountBalanceIcon />}
+        />
+        <NavLink
+          to={"/customer/transfer-money"}
+          name="Transfer Money"
+          icon={<PeopleIcon />}
+        />
+      </>
+    );
   } else {
     return null;
   }
