@@ -36,6 +36,7 @@ export default function IndirectTransferForm() {
       console.log(error);
       setIsLording(false);
     } else {
+      console.log(value);
       //api call here
       if (method === 0) {
         //withdraw api call

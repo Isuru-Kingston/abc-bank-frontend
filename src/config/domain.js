@@ -1,0 +1,2 @@
+// auth
+const AUTHDOMAIN = "test";

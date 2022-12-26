@@ -1,11 +1,14 @@
-import { useState } from "react";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
+import LoadingButton from "@mui/lab/LoadingButton";
 import Alert from "@mui/material/Alert";
 import Avatar from "@mui/material/Avatar";
-import LoadingButton from "@mui/lab/LoadingButton";
-import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import axios from "axios";
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import authContext from "../../../context/authContext";
 const Joi = require("joi");
 
 const schema = Joi.object({
@@ -18,6 +21,8 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(undefined);
   const [isLording, setIsLording] = useState(false);
+  const auth = useContext(authContext);
+  const navigate = useNavigate();
 
   const handleSubmit = () => {
     setError(undefined);
@@ -30,15 +35,31 @@ export default function LoginForm() {
 
     if (error) {
       setError(error.details[0].message);
-      console.log(error);
       setIsLording(false);
     } else {
-      //api call here to login
       console.log(value);
-      setTimeout(() => {
-        setError("server error");
-        setIsLording(false);
-      }, 2000);
+      //api call here to login
+      axios
+        .post("http://localhost:8004/signin", {
+          id: userName,
+          password,
+        })
+        .then(function (response) {
+          console.log(response.data.role);
+          auth.setAuth(response.data);
+          if (response.data.role === "user") {
+            navigate("/customer");
+          } else if (response.data.role === "branch") {
+            navigate("/branch");
+          } else if (response.data.role === "staff") {
+            navigate("/employee");
+          }
+          setIsLording(false);
+        })
+        .catch(function (error) {
+          setError(error.response.data.error);
+          setIsLording(false);
+        });
     }
   };
 
