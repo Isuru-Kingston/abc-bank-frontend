@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
@@ -6,20 +6,25 @@ import Avatar from "@mui/material/Avatar";
 import LoadingButton from "@mui/lab/LoadingButton";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
+import axios from "axios";
+import authContext from "../../../context/authContext";
 const Joi = require("joi");
 
 const schema = Joi.object({
-  senderAccountNumber: Joi.number().required(),
-  receiverAccountNumber: Joi.number().required(),
+  senderAccountNumber: Joi.string().required(),
+  receiverAccountNumber: Joi.string().required(),
   amount: Joi.number().required(),
 });
 
-export default function DirectTransferForm() {
-  const [senderAccountNumber, setSenderAccountNumber] = useState("");
+export default function DirectTransferForm({ id }) {
+  const [senderAccountNumber, setSenderAccountNumber] = useState(id);
   const [receiverAccountNumber, setReceiverAccountNumber] = useState("");
   const [amount, setAmount] = useState("");
   const [error, setError] = useState(undefined);
   const [isLording, setIsLording] = useState(false);
+  const [isSuccess, setSuccess] = useState(false);
+
+  const authData = useContext(authContext);
 
   const handleSubmit = () => {
     setError(undefined);
@@ -36,12 +41,33 @@ export default function DirectTransferForm() {
       console.log(error);
       setIsLording(false);
     } else {
-      //api call here to login
       console.log(value);
-      setTimeout(() => {
-        setError("server error");
-        setIsLording(false);
-      }, 2000);
+
+      axios
+        .post(
+          "http://localhost:8003/transaction/direct",
+          {
+            account: receiverAccountNumber,
+            from: senderAccountNumber,
+            amount,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "x-auth-token": authData.auth.token,
+            },
+          }
+        )
+        .then(function (response) {
+          setReceiverAccountNumber("");
+          setAmount("");
+          setIsLording(false);
+          setSuccess(true);
+        })
+        .catch(function (error) {
+          setError(error.response.data.error);
+          setIsLording(false);
+        });
     }
   };
 
@@ -73,8 +99,10 @@ export default function DirectTransferForm() {
           required
           fullWidth
           id="senderAccountNumber"
-          label="Sender Account Number"
+          label="Your's Account Number"
           name="senderAccountNumber"
+          value={senderAccountNumber}
+          disabled={true}
         />
         <TextField
           onChange={(e) => handleInputChange(e, setReceiverAccountNumber)}
@@ -84,6 +112,7 @@ export default function DirectTransferForm() {
           id="receiverAccountNumber"
           label="Receiver Account Number"
           name="receiverAccountNumber"
+          value={receiverAccountNumber}
         />
         <TextField
           onChange={(e) => handleInputChange(e, setAmount)}
@@ -93,6 +122,7 @@ export default function DirectTransferForm() {
           id="amount"
           label="Amount"
           name="amount"
+          value={amount}
         />
         <LoadingButton
           loading={isLording}
@@ -104,6 +134,15 @@ export default function DirectTransferForm() {
           Submit
         </LoadingButton>
         {error && <Alert severity="error">{error}</Alert>}
+        {isSuccess && (
+          <Alert
+            onClose={() => {
+              setSuccess(false);
+            }}
+          >
+            {"Transaction successfull !"}
+          </Alert>
+        )}
       </Box>
     </Box>
   );
