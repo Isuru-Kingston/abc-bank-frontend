@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
@@ -6,28 +6,35 @@ import Avatar from "@mui/material/Avatar";
 import LoadingButton from "@mui/lab/LoadingButton";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
+import axios from "axios";
+import authContext from "../../../context/authContext";
 const Joi = require("joi");
 
 const schema = Joi.object({
   email: Joi.string().required(),
   password: Joi.string().required(),
+  confirmpassword: Joi.string()
+    .valid(Joi.ref("password"), "pasword should match with confirm password")
+    .required(),
   phone: Joi.number().required(),
   street: Joi.string().required(),
   postalCode: Joi.number().required(),
   city: Joi.string().required(),
-  country: Joi.string().required(),
 });
 
 export default function CreateBranchForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmpassword, setConfirmpassword] = useState("");
   const [phone, setphone] = useState("");
   const [street, setStreet] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [city, setcity] = useState("");
-  const [country, setCountry] = useState("");
   const [error, setError] = useState(undefined);
   const [isLording, setIsLording] = useState(false);
+  const [isSuccess, setSuccess] = useState(false);
+
+  const authData = useContext(authContext);
 
   const handleSubmit = () => {
     setError(undefined);
@@ -36,11 +43,11 @@ export default function CreateBranchForm() {
     const { value, error } = schema.validate({
       email,
       password,
+      confirmpassword,
       phone,
       street,
       postalCode,
       city,
-      country,
     });
 
     if (error) {
@@ -48,17 +55,48 @@ export default function CreateBranchForm() {
       console.log(error);
       setIsLording(false);
     } else {
-      //api call here to login
       console.log(value);
-      setTimeout(() => {
-        setError("server error");
-        setIsLording(false);
-      }, 2000);
+
+      axios
+        .post(
+          "http://localhost:8001/branch",
+          {
+            email,
+            password,
+            phone,
+            street,
+            postalCode,
+            city,
+            country: "Sri Lanka",
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "x-auth-token": authData.auth.token,
+            },
+          }
+        )
+        .then(function (response) {
+          setEmail("");
+          setPassword("");
+          setConfirmpassword("");
+          setphone("");
+          setStreet("");
+          setPostalCode("");
+          setcity("");
+          setIsLording(false);
+          setSuccess(true);
+        })
+        .catch(function (error) {
+          setError(error.response.data.error);
+          setIsLording(false);
+        });
     }
   };
 
   const handleInputChange = (e, setInputState) => {
     setError(undefined);
+    console.log(e.target.value);
     setInputState(e.target.value);
   };
 
@@ -87,7 +125,48 @@ export default function CreateBranchForm() {
           id="email"
           label="Email"
           name="email"
+          value={email}
           autoFocus
+        />
+        <TextField
+          onChange={(e) => handleInputChange(e, setphone)}
+          margin="normal"
+          required
+          fullWidth
+          id="phone"
+          label="Phone"
+          name="phone"
+          value={phone}
+        />
+        <TextField
+          onChange={(e) => handleInputChange(e, setStreet)}
+          margin="normal"
+          required
+          fullWidth
+          id="street"
+          label="Address"
+          name="street"
+          value={street}
+        />
+        <TextField
+          onChange={(e) => handleInputChange(e, setPostalCode)}
+          margin="normal"
+          required
+          fullWidth
+          id="postalCode"
+          label="PostalCode"
+          name="postalCode"
+          value={postalCode}
+        />
+        <TextField
+          onChange={(e) => handleInputChange(e, setcity)}
+          margin="normal"
+          required
+          fullWidth
+          id="city"
+          label="City"
+          name="city"
+          value={city}
         />
         <TextField
           onChange={(e) => handleInputChange(e, setPassword)}
@@ -98,53 +177,20 @@ export default function CreateBranchForm() {
           label="Password"
           type="password"
           id="password"
-          autoComplete="current-password"
+          value={password}
         />
         <TextField
-          onChange={(e) => handleInputChange(e, setphone)}
+          onChange={(e) => handleInputChange(e, setConfirmpassword)}
           margin="normal"
           required
           fullWidth
-          id="phone"
-          label="Phone"
-          name="phone"
+          name="confirmpassword"
+          label="Confirm Password"
+          type="password"
+          id="confirmpassword"
+          value={confirmpassword}
         />
-        <TextField
-          onChange={(e) => handleInputChange(e, setStreet)}
-          margin="normal"
-          required
-          fullWidth
-          id="street"
-          label="Street"
-          name="street"
-        />
-        <TextField
-          onChange={(e) => handleInputChange(e, setPostalCode)}
-          margin="normal"
-          required
-          fullWidth
-          id="postalCode"
-          label="PostalCode"
-          name="postalCode"
-        />
-        <TextField
-          onChange={(e) => handleInputChange(e, setcity)}
-          margin="normal"
-          required
-          fullWidth
-          id="city"
-          label="City"
-          name="city"
-        />
-        <TextField
-          onChange={(e) => handleInputChange(e, setCountry)}
-          margin="normal"
-          required
-          fullWidth
-          id="country"
-          label="Country"
-          name="country"
-        />
+
         <LoadingButton
           loading={isLording}
           onClick={() => handleSubmit()}
@@ -155,6 +201,15 @@ export default function CreateBranchForm() {
           Submit
         </LoadingButton>
         {error && <Alert severity="error">{error}</Alert>}
+        {isSuccess && (
+          <Alert
+            onClose={() => {
+              setSuccess(false);
+            }}
+          >
+            {"branch created successfully !"}
+          </Alert>
+        )}
       </Box>
     </Box>
   );
