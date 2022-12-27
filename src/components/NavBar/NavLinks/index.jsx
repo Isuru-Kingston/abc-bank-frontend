@@ -70,11 +70,6 @@ export default function NavLinks() {
           name="Account List"
           icon={<AccountBalanceIcon />}
         />
-        <NavLink
-          to={"/customer/transfer-money"}
-          name="Transfer Money"
-          icon={<PeopleIcon />}
-        />
       </>
     );
   } else {

@@ -23,7 +23,6 @@ import CreateCustomer from "./components/Employee/CreateCustomer";
 import DirectTransferForm from "./components/Account/DirectTransferForm";
 import CreateAccount from "./components/Account/CreateAccout";
 import IndirectTransfer from "./components/Account/IndirectTransferForm";
-import TransferMoney from "./components/Customer/TransferMoney";
 import AccountList from "./components/Customer/AccountList";
 import AuthProvider from "./context/AuthProvider";
 
@@ -56,10 +55,6 @@ const router = createBrowserRouter([
       {
         path: "customer",
         element: <Customer />,
-      },
-      {
-        path: "customer/transfer-money",
-        element: <TransferMoney />,
       },
       {
         path: "customer/account-list",
