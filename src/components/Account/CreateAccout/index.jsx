@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
@@ -6,47 +6,29 @@ import Avatar from "@mui/material/Avatar";
 import LoadingButton from "@mui/lab/LoadingButton";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
+import axios from "axios";
+import authContext from "../../../context/authContext";
 const Joi = require("joi");
 
 const schema = Joi.object({
-  email: Joi.string().required(),
-  phone: Joi.number().required(),
-  street: Joi.string().required(),
-  postalCode: Joi.number().required(),
-  city: Joi.string().required(),
-  country: Joi.string().required(),
-  possition: Joi.string().required(),
   branch: Joi.string().required(),
-  nic: Joi.string().required(),
 });
 
-export default function CreateAccount() {
-  const [email, setEmail] = useState("");
-  const [phone, setphone] = useState("");
-  const [street, setStreet] = useState("");
-  const [postalCode, setPostalCode] = useState("");
-  const [city, setcity] = useState("");
-  const [country, setCountry] = useState("");
-  const [possition, setposition] = useState("");
+export default function CreateAccountForm() {
   const [branch, setBranch] = useState("");
-  const [nic, setNic] = useState("");
+  const [name, setName] = useState("");
   const [error, setError] = useState(undefined);
   const [isLording, setIsLording] = useState(false);
+  const [isSuccess, setSuccess] = useState(false);
+
+  const authData = useContext(authContext);
 
   const handleSubmit = () => {
     setError(undefined);
     setIsLording(true);
 
     const { value, error } = schema.validate({
-      email,
-      phone,
-      street,
-      postalCode,
-      city,
-      country,
-      possition,
       branch,
-      nic,
     });
 
     if (error) {
@@ -54,12 +36,31 @@ export default function CreateAccount() {
       console.log(error);
       setIsLording(false);
     } else {
-      //api call here to login
       console.log(value);
-      setTimeout(() => {
-        setError("server error");
-        setIsLording(false);
-      }, 2000);
+
+      axios
+        .post(
+          "http://localhost:8003/account/",
+          {
+            branch,
+            owner: "user_2",
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "x-auth-token": authData.auth.token,
+            },
+          }
+        )
+        .then(function (response) {
+          setBranch("");
+          setIsLording(false);
+          setSuccess(true);
+        })
+        .catch(function (error) {
+          setError(error.response.data.error);
+          setIsLording(false);
+        });
     }
   };
 
@@ -86,68 +87,15 @@ export default function CreateAccount() {
       </Typography>
       <Box sx={{ mt: 1 }}>
         <TextField
-          onChange={(e) => handleInputChange(e, setEmail)}
+          onChange={(e) => handleInputChange(e, setName)}
           margin="normal"
           required
           fullWidth
-          id="email"
-          label="Email"
-          name="email"
-          autoFocus
-        />
-        <TextField
-          onChange={(e) => handleInputChange(e, setphone)}
-          margin="normal"
-          required
-          fullWidth
-          id="phone"
-          label="Phone"
-          name="phone"
-        />
-        <TextField
-          onChange={(e) => handleInputChange(e, setStreet)}
-          margin="normal"
-          required
-          fullWidth
-          id="street"
-          label="Street"
-          name="street"
-        />
-        <TextField
-          onChange={(e) => handleInputChange(e, setPostalCode)}
-          margin="normal"
-          required
-          fullWidth
-          id="postalCode"
-          label="PostalCode"
-          name="postalCode"
-        />
-        <TextField
-          onChange={(e) => handleInputChange(e, setcity)}
-          margin="normal"
-          required
-          fullWidth
-          id="city"
-          label="City"
-          name="city"
-        />
-        <TextField
-          onChange={(e) => handleInputChange(e, setCountry)}
-          margin="normal"
-          required
-          fullWidth
-          id="country"
-          label="Country"
-          name="country"
-        />
-        <TextField
-          onChange={(e) => handleInputChange(e, setposition)}
-          margin="normal"
-          required
-          fullWidth
-          id="possition"
-          label="Possition"
-          name="possition"
+          id="name"
+          label="Name"
+          name="name"
+          value="get name from user"
+          disabled={true}
         />
         <TextField
           onChange={(e) => handleInputChange(e, setBranch)}
@@ -157,16 +105,9 @@ export default function CreateAccount() {
           id="branch"
           label="Branch"
           name="branch"
+          value={branch}
         />
-        <TextField
-          onChange={(e) => handleInputChange(e, setNic)}
-          margin="normal"
-          required
-          fullWidth
-          id="nic"
-          label="NIC"
-          name="nic"
-        />
+
         <LoadingButton
           loading={isLording}
           onClick={() => handleSubmit()}
@@ -177,6 +118,15 @@ export default function CreateAccount() {
           Submit
         </LoadingButton>
         {error && <Alert severity="error">{error}</Alert>}
+        {isSuccess && (
+          <Alert
+            onClose={() => {
+              setSuccess(false);
+            }}
+          >
+            {"account created successfully !"}
+          </Alert>
+        )}
       </Box>
     </Box>
   );
