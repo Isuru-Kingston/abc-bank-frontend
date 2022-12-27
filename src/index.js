@@ -26,6 +26,7 @@ import IndirectTransfer from "./components/Account/IndirectTransferForm";
 import AccountList from "./components/Customer/AccountList";
 import AuthProvider from "./context/AuthProvider";
 import UserDetails from "./components/Employee/UserDetails";
+import AccountListHolder from "./components/Employee/AccountList";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -84,6 +85,10 @@ const router = createBrowserRouter([
       {
         path: "employee/user-details",
         element: <UserDetails />,
+      },
+      {
+        path: "employee/account-list",
+        element: <AccountListHolder />,
       },
     ],
   },

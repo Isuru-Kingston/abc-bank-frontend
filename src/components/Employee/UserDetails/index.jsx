@@ -10,7 +10,7 @@ import Paper from "@mui/material/Paper";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "@mui/material/Button";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
 
 import authContext from "../../../context/authContext";
@@ -40,6 +40,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function UserDetails() {
   const [branches, setBranches] = useState([]);
   const [page, setPage] = useState(1);
+  const navigate = useNavigate();
 
   const authData = useContext(authContext);
 
@@ -77,6 +78,10 @@ export default function UserDetails() {
     }
   };
 
+  const handleRowClick = (userId) => {
+    navigate("/employee/account-list", { state: { userId } });
+  };
+
   return (
     <div
       style={{
@@ -107,7 +112,10 @@ export default function UserDetails() {
           </TableHead>
           <TableBody>
             {branches.map((row, index) => (
-              <StyledTableRow key={index}>
+              <StyledTableRow
+                key={index}
+                onClick={() => handleRowClick(row.user_id)}
+              >
                 <StyledTableCell component="th" scope="row">
                   {row.user_id}
                 </StyledTableCell>

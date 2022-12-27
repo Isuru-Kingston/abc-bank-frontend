@@ -14,9 +14,9 @@ const schema = Joi.object({
   branch: Joi.string().required(),
 });
 
-export default function CreateAccountForm() {
+export default function CreateAccountForm({ userId }) {
   const [branch, setBranch] = useState("");
-  const [name, setName] = useState("");
+  const [name, setName] = useState(userId);
   const [error, setError] = useState(undefined);
   const [isLording, setIsLording] = useState(false);
   const [isSuccess, setSuccess] = useState(false);
@@ -43,7 +43,7 @@ export default function CreateAccountForm() {
           "http://localhost:8003/account/",
           {
             branch,
-            owner: "user_2",
+            owner: name,
           },
           {
             headers: {
@@ -94,7 +94,7 @@ export default function CreateAccountForm() {
           id="name"
           label="Name"
           name="name"
-          value="get name from user"
+          value={name}
           disabled={true}
         />
         <TextField
