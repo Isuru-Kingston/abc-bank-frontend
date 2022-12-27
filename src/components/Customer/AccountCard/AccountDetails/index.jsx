@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import DirectTransferForm from "../../../Account/DirectTransferForm";
 import TransferHistory from "../TransferHistory";
 
-export default function AccountDetails({ accountNumber }) {
+export default function AccountDetails({ accountNumber, accountInfo }) {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -22,14 +22,28 @@ export default function AccountDetails({ accountNumber }) {
           onChange={handleChange}
           aria-label="basic tabs example"
         >
-          <Tab label="Transfer" {...a11yProps(0)} />
-          <Tab label="History" {...a11yProps(1)} />
+          <Tab label="Info" {...a11yProps(0)} />
+          <Tab label="Transfer" {...a11yProps(1)} />
+          <Tab label="History" {...a11yProps(2)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <DirectTransferForm id={accountNumber} />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          <div>Owner Name : {accountInfo.owner}</div>
+          <div>Branch : {accountInfo.branch}</div>
+          <div>Balance : RS:{accountInfo.balance}.00</div>
+        </div>
       </TabPanel>
       <TabPanel value={value} index={1}>
+        <DirectTransferForm id={accountNumber} />
+      </TabPanel>
+      <TabPanel value={value} index={2}>
         <TransferHistory accountNumber={accountNumber} />
       </TabPanel>
     </Box>
