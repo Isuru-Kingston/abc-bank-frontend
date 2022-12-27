@@ -12,6 +12,7 @@ const Joi = require("joi");
 
 const schema = Joi.object({
   email: Joi.string().required(),
+  name: Joi.string().required(),
   password: Joi.string().required(),
   confirmpassword: Joi.string()
     .valid(Joi.ref("password"), "pasword should match with confirm password")
@@ -34,6 +35,7 @@ export default function CreateEmplyeeForm() {
   const [city, setcity] = useState("");
   const [possition, setposition] = useState("");
   const [nic, setNic] = useState("");
+  const [name, setName] = useState("");
   const [error, setError] = useState(undefined);
   const [isLording, setIsLording] = useState(false);
   const [isSuccess, setSuccess] = useState(false);
@@ -46,6 +48,7 @@ export default function CreateEmplyeeForm() {
 
     const { value, error } = schema.validate({
       email,
+      name,
       password,
       confirmpassword,
       phone,
@@ -68,6 +71,7 @@ export default function CreateEmplyeeForm() {
           "http://localhost:8002/employee",
           {
             email,
+            name,
             password,
             phone,
             street,
@@ -87,6 +91,7 @@ export default function CreateEmplyeeForm() {
         )
         .then(function (response) {
           setEmail("");
+          setName("");
           setPassword("");
           setConfirmpassword("");
           setphone("");
@@ -128,6 +133,17 @@ export default function CreateEmplyeeForm() {
       </Typography>
       <Box sx={{ mt: 1 }}>
         <TextField
+          onChange={(e) => handleInputChange(e, setName)}
+          margin="normal"
+          required
+          fullWidth
+          id="name"
+          label="Name"
+          name="name"
+          value={name}
+          autoFocus
+        />
+        <TextField
           onChange={(e) => handleInputChange(e, setEmail)}
           margin="normal"
           required
@@ -136,7 +152,6 @@ export default function CreateEmplyeeForm() {
           label="Email"
           name="email"
           value={email}
-          autoFocus
         />
         <TextField
           onChange={(e) => handleInputChange(e, setphone)}

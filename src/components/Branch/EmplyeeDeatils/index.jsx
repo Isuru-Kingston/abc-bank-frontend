@@ -87,6 +87,7 @@ export default function EmplyeeDetails() {
           <TableHead>
             <TableRow>
               <StyledTableCell>Employee ID</StyledTableCell>
+              <StyledTableCell>Name</StyledTableCell>
               <StyledTableCell>Possition</StyledTableCell>
               <StyledTableCell>NIC</StyledTableCell>
               <StyledTableCell>E-mail</StyledTableCell>
@@ -102,6 +103,7 @@ export default function EmplyeeDetails() {
                 <StyledTableCell component="th" scope="row">
                   {row.employee_id}
                 </StyledTableCell>
+                <StyledTableCell>{row.name}</StyledTableCell>
                 <StyledTableCell>{row.possition}</StyledTableCell>
                 <StyledTableCell>{row.nic}</StyledTableCell>
                 <StyledTableCell>{row.email}</StyledTableCell>
