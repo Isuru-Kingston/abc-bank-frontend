@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import authContext from "../../../context/authContext";
 const Joi = require("joi");
@@ -23,6 +23,16 @@ export default function LoginForm() {
   const [isLording, setIsLording] = useState(false);
   const auth = useContext(authContext);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (auth.auth.role === "user") {
+      navigate("/customer");
+    } else if (auth.auth.role === "branch") {
+      navigate("/branch");
+    } else if (auth.auth.role === "staff") {
+      navigate("/employee");
+    }
+  }, [auth]);
 
   const handleSubmit = () => {
     setError(undefined);
@@ -47,13 +57,6 @@ export default function LoginForm() {
         .then(function (response) {
           console.log(response.data.role);
           auth.setAuth(response.data);
-          if (response.data.role === "user") {
-            navigate("/customer");
-          } else if (response.data.role === "branch") {
-            navigate("/branch");
-          } else if (response.data.role === "staff") {
-            navigate("/employee");
-          }
           setIsLording(false);
         })
         .catch(function (error) {

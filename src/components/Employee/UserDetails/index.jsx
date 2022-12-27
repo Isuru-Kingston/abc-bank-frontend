@@ -10,9 +10,12 @@ import Paper from "@mui/material/Paper";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "@mui/material/Button";
 import axios from "axios";
-import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+
+import EditIcon from "@mui/icons-material/Edit";
 
 import authContext from "../../../context/authContext";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ReadMoreIcon from "@mui/icons-material/ReadMore";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -34,21 +37,21 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function EmplyeeDetails() {
+export default function UserDetails() {
   const [branches, setBranches] = useState([]);
   const [page, setPage] = useState(1);
 
   const authData = useContext(authContext);
 
   useEffect(() => {
-    console.log("page......", page);
+    console.log("page......", authData.auth);
     getBranches();
   }, [page]);
 
   const getBranches = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8002/employees/" + page,
+        "http://localhost:8002/customers/" + page,
         {
           headers: {
             "Content-Type": "application/json",
@@ -87,31 +90,46 @@ export default function EmplyeeDetails() {
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
-              <StyledTableCell>Employee ID</StyledTableCell>
+              <StyledTableCell>User ID</StyledTableCell>
               <StyledTableCell>Name</StyledTableCell>
-              <StyledTableCell>Possition</StyledTableCell>
+
               <StyledTableCell>NIC</StyledTableCell>
               <StyledTableCell>E-mail</StyledTableCell>
               <StyledTableCell>Phone</StyledTableCell>
               <StyledTableCell>Postal Code</StyledTableCell>
               <StyledTableCell>City</StyledTableCell>
               <StyledTableCell>Address</StyledTableCell>
+              <StyledTableCell>Status</StyledTableCell>
+              <StyledTableCell></StyledTableCell>
+              <StyledTableCell></StyledTableCell>
+              <StyledTableCell></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {branches.map((row, index) => (
               <StyledTableRow key={index}>
                 <StyledTableCell component="th" scope="row">
-                  {row.employee_id}
+                  {row.user_id}
                 </StyledTableCell>
                 <StyledTableCell>{row.name}</StyledTableCell>
-                <StyledTableCell>{row.possition}</StyledTableCell>
                 <StyledTableCell>{row.nic}</StyledTableCell>
                 <StyledTableCell>{row.email}</StyledTableCell>
                 <StyledTableCell>{row.phone}</StyledTableCell>
                 <StyledTableCell>{row.address.postalCode}</StyledTableCell>
                 <StyledTableCell>{row.address.city}</StyledTableCell>
                 <StyledTableCell>{row.address.street}</StyledTableCell>
+                <StyledTableCell>
+                  {row.is_active ? "Active" : "Inactive"}
+                </StyledTableCell>
+                <StyledTableCell>
+                  <EditIcon />
+                </StyledTableCell>
+                <StyledTableCell>
+                  <DeleteIcon />
+                </StyledTableCell>
+                <StyledTableCell>
+                  <ReadMoreIcon />
+                </StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>

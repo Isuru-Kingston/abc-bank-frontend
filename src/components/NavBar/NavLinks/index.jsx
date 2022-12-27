@@ -59,6 +59,11 @@ export default function NavLinks() {
           name="Direct Transfer"
           icon={<AddHomeWorkIcon />}
         />
+        <NavLink
+          to={"/employee/user-details"}
+          name="User Details"
+          icon={<PeopleIcon />}
+        />
       </>
     );
   } else if (pathname.substring(0, 9) === "/customer") {

@@ -25,7 +25,7 @@ import CreateAccount from "./components/Account/CreateAccout";
 import IndirectTransfer from "./components/Account/IndirectTransferForm";
 import AccountList from "./components/Customer/AccountList";
 import AuthProvider from "./context/AuthProvider";
-
+import UserDetails from "./components/Employee/UserDetails";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -79,6 +79,11 @@ const router = createBrowserRouter([
       {
         path: "employee/indirect-transfer",
         element: <IndirectTransfer />,
+      },
+
+      {
+        path: "employee/user-details",
+        element: <UserDetails />,
       },
     ],
   },
